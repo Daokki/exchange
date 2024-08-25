@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>為替変換ツール</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>為替変換ツール</h1>
+        <select id="currencyFrom">
+            <option value="JPY">日本円</option>
+            <option value="USD">ドル</option>
+            <option value="EUR">ユーロ</option>
+        </select>
+        <select id="currencyTo">
+            <option value="JPY">日本円</option>
+            <option value="USD">ドル</option>
+            <option value="EUR">ユーロ</option>
+        </select>
+        <input type="number" id="amount" placeholder="金額を入力" />
+        <button onclick="convertCurrency()">変換する</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        async function convertCurrency() {
+            const from = document.getElementById('currencyFrom').value;
+            const to = document.getElementById('currencyTo').value;
+            const amount = document.getElementById('amount').value;
+
+            if (from === to) {
+                document.getElementById('result').innerText = `結果: ${amount} ${to}`;
+                return;
+            }
+
+            try {
+                const response = await fetch(`/convert?from=${from}&to=${to}&amount=${amount}`);
+                const data = await response.json();
+                document.getElementById('result').innerText = `結果: ${data.converted_amount} ${to}`;
+            } catch (error) {
+                document.getElementById('result').innerText = 'エラーが発生しました。';
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>
